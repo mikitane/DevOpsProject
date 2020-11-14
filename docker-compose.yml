@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  broker_service:
+    build: ./BrokerService
+    networks:
+      - messaging_network
+  orig_service:
+    build: ./OrigService
+    environment:
+        - PYTHONUNBUFFERED=1
+    networks:
+      - messaging_network
+  imed_service:
+    build: ./ImedService
+    networks:
+      - messaging_network
+  obse_service:
+    build: ./ObseService
+    volumes:
+        - "./output:/output"
+    environment:
+        - PYTHONUNBUFFERED=1
+    networks:
+      - messaging_network
+  httpserv_service:
+    build: ./HttpServService
+    volumes:
+      - "./output:/output"
+    ports:
+      - "8080:8080"
+    networks:
+      - messaging_network
+networks:
+  messaging_network:
