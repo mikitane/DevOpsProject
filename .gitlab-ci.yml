@@ -10,3 +10,4 @@ build:
   stage: build
   script:
     - docker ps -a
+    - docker-compose up -f /etc/sourcecode/docker-compose.yml --build
