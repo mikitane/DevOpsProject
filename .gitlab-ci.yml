@@ -16,3 +16,9 @@ build:
     - ls -la
     - ls -la /etc
     - docker-compose up --build -d
+
+test:
+  stage: test
+  image: python:3.9
+  script:
+    - python ./tests/healthcheck.py

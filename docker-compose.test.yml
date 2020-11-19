@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  broker_service_test:
+    build: ./BrokerService
+    networks:
+      - testing_network
+  orig_service_test:
+    build: ./OrigService
+    environment:
+        - PYTHONUNBUFFERED=1
+    networks:
+      - testing_network
+  imed_service_test:
+    build: ./ImedService
+    networks:
+      - testing_network
+  obse_service_test:
+    build: ./ObseService
+    volumes:
+        - "./output:/output"
+    environment:
+        - PYTHONUNBUFFERED=1
+    networks:
+      - testing_network
+  httpserv_service_test:
+    build: ./HttpServService
+    volumes:
+      - "./output:/output"
+    ports:
+      - "9000:8082"
+    networks:
+      - testing_network
+networks:
+  testing_network:
