@@ -8,8 +8,8 @@ image: docker/compose:latest
 #   - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 build:
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
 
   stage: build
   script:
