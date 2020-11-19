@@ -15,4 +15,4 @@ build:
     - pwd
     - ls -la
     - ls -la /etc
-    - docker-compose -f /etc/sourcecode/docker-compose.yml up --build
+    - docker-compose up --build -d
