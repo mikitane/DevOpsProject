@@ -27,7 +27,7 @@ services:
     volumes:
       - "./output:/output"
     ports:
-      - "8080:8080"
+      - "8082:8082"
     networks:
       - messaging_network
 networks:
