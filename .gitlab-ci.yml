@@ -13,3 +13,4 @@ build:
   script:
     - docker ps -a
     - docker-compose --version # up -f /etc/sourcecode/docker-compose.yml --build
+
