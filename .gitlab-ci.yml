@@ -1,4 +1,7 @@
-image: docker/compose:latest
+image: docker:latest
+
+services:
+  - docker:dind
 
 
 
@@ -14,7 +17,7 @@ build:
   stage: build
   script:
     - docker ps -a
-    - pwd
-    - ls -la
-    - ls -la /etc
-    - docker-compose up --build -d
+    # - pwd
+    # - ls -la
+    # - ls -la /etc
+    # - docker-compose up --build -d
