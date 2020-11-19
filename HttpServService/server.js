@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 const LOG_FILE_PATH = '/output/logs.txt';
-const port = 8080;
+const port = 8082;
 
 const server = http.createServer((req, res) => {
   if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
