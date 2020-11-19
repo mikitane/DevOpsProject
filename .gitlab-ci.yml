@@ -21,4 +21,5 @@ test:
   stage: test
   image: python:3.9
   script:
+    - pip install -r requirments.txt
     - python ./tests/healthcheck.py
