@@ -12,7 +12,7 @@ while True:
 	except Exception as e:
 		print('Healthcheck failed')
 		print(e)
-		if retries > 20:
+		if retries > 3:
 			raise Exception('Healthcheck failed!')
 
 		time.sleep(2)

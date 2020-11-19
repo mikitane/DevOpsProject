@@ -20,6 +20,7 @@ build:
 test:
   stage: test
   image: python:3.9
+  network_mode: host
   script:
     - pip install -r ./tests/requirements.txt
     - python ./tests/healthcheck.py
