@@ -38,5 +38,7 @@ services:
 
 networks:
   testing_network:
+    external: true
+    name: testing_network
   gitlab-network:
     name: gitlab-network

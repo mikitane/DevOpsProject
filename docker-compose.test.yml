@@ -30,3 +30,4 @@ services:
       - testing_network
 networks:
   testing_network:
+    name: testing_network
