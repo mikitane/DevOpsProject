@@ -30,4 +30,5 @@ services:
       - testing_network
 networks:
   testing_network:
+    external: true
     name: testing_network
