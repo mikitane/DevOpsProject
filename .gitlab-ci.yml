@@ -12,5 +12,8 @@ build:
   stage: build
   script:
     - docker ps -a
+    - pwd
+    - ls -la
+    - ls -la /etc
     - docker-compose -f /etc/sourcecode/docker-compose.yml up --build
 
