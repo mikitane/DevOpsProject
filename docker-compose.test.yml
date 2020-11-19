@@ -26,8 +26,6 @@ services:
     build: ./HttpServService
     volumes:
       - "./output:/output"
-    ports:
-      - "9000:8082"
     networks:
       - testing_network
 networks:

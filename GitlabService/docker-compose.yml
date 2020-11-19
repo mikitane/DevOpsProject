@@ -33,8 +33,10 @@ services:
       # - '/usr/bin/docker-compose:/usr/bin/docker-compose'
       # - '../:/etc/sourcecode/'
     networks:
+      - testing_network
       - gitlab-network
 
 networks:
+  testing_network:
   gitlab-network:
     name: gitlab-network

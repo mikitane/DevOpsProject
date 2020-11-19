@@ -6,7 +6,7 @@ while True:
 	print("ASD")
 
 	try:
-		requests.get('http://localhost:9000')
+		requests.get('http://localhost:8082')
 		print('Healthcheck ok')
 		break
 	except Exception as e:
