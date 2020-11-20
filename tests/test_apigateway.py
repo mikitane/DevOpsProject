@@ -10,7 +10,7 @@ def wait_for_state(wanted_state):
         if state == wanted_state:
             return
 
-        time.sleep(0.5)
+        sleep(0.5)
 
     raise Exception('wait_for_state timeout, wanted_state: {}'.format(wanted_state))
 
