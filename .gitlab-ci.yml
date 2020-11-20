@@ -13,7 +13,7 @@ build:
   stage: build
   script:
     - docker build ./tests -t test_service:latest
-    - docker-compose -f docker-compose.test.yml up --build -d
+    - docker-compose -f docker-compose.test.yml up --build --force-recreate -d
 
 test:
   stage: test
@@ -25,5 +25,5 @@ test:
 deploy:
   stage: deploy
   script:
-    - docker-compose up --build -d
+    - docker-compose up --build --force-recreate -d
 
