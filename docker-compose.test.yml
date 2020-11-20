@@ -37,4 +37,3 @@ services:
 networks:
   testing_network:
     name: testing_network
-
