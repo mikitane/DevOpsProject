@@ -26,7 +26,7 @@ class APIGatewayTestCase(unittest.TestCase):
         response = requests.get('http://apigateway_service:8081/messages')
         messages = response.content.decode('utf-8').split('\n')
         messages = [m for m in messages if m]
-
+        print(messages)
         for i, message in enumerate(messages):
             message_topic = 'my.o' if i % 2 == 0 else 'my.i'
             message_type = 'MSG_' if i % 2 == 0 else 'Got MSG_'
