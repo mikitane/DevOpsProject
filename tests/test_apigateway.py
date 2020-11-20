@@ -6,11 +6,11 @@ def wait_for_state(wanted_state):
     for i in range(1, 20):
         state_response = requests.get('http://apigateway_service:8081/state')
         state = state_response.content.decode('utf-8')
-
+        print('------' + state + '------')
         if state == wanted_state:
             return
 
-        time.sleep(0.5)
+        sleep(0.5)
 
     raise Exception('wait_for_state timeout, wanted_state: {}'.format(wanted_state))
 
@@ -26,7 +26,7 @@ class APIGatewayTestCase(unittest.TestCase):
         response = requests.get('http://apigateway_service:8081/messages')
         messages = response.content.decode('utf-8').split('\n')
         messages = [m for m in messages if m]
-
+        print(messages)
         for i, message in enumerate(messages):
             message_topic = 'my.o' if i % 2 == 0 else 'my.i'
             message_type = 'MSG_' if i % 2 == 0 else 'Got MSG_'
@@ -117,6 +117,7 @@ class APIGatewayTestCase(unittest.TestCase):
     #     # Services should be unavailable after SHUTDOWN
     #     with self.assertRaises(Exception):
     #         requests.get('http://apigateway_service:8081/state')
+
 
 
 
