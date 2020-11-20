@@ -56,12 +56,12 @@ services:
         aliases:
           - apigateway_service
 
-  test_service:
-    build: ./tests
-    environment:
-      - PYTHONUNBUFFERED=1
-    networks:
-      - testing_network
+  # test_service:
+  #   build: ./tests
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+  #   networks:
+  #     - testing_network
 
 networks:
   testing_network:

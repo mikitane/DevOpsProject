@@ -12,13 +12,13 @@ build:
 
   stage: build
   script:
-    # - docker build ./tests/Dockerfile -t testimage:latest
+    - docker build ./tests/Dockerfile -t testimage:latest
     - docker-compose -f docker-compose.test.yml up --build -d
 
 test:
   stage: test
   script:
-    - docker run --network="testing_network" devopsproject_test_service python healthcheck.py
+    - docker run --network="testing_network" testimage:latest python healthcheck.py
     - docker run --network="testing_network" devopsproject_test_service python test_httpserv.py
     - docker run --network="testing_network" devopsproject_test_service python test_apigateway.py
     - docker-compose -f docker-compose.test.yml stop
