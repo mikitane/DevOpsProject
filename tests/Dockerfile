@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 
 # Start service
 COPY healthcheck.py .
-CMD ["python", "healthcheck.py"]
+COPY test_httpserv.py .

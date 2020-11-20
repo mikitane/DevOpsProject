@@ -17,7 +17,7 @@ services:
   obse_service:
     build: ./ObseService
     volumes:
-        - "./output:/output"
+        - "output_data:/output"
     environment:
         - PYTHONUNBUFFERED=1
     networks:
@@ -25,10 +25,12 @@ services:
   httpserv_service:
     build: ./HttpServService
     volumes:
-      - "./output:/output"
+      - "output_data:/output"
     ports:
       - "8082:8082"
     networks:
       - messaging_network
 networks:
   messaging_network:
+volumes:
+  output_data:
