@@ -28,6 +28,7 @@ def set_state(state):
     return state_response.content.decode('utf-8')
 
 def main():
+    print('Starting orig service')
     connection = establish_connection()
     channel = connection.channel()
 
@@ -39,12 +40,16 @@ def main():
 
         if state == 'RUNNING':
             message = 'MSG_{}'.format(i)
+            print('Sending message with ' + str(i) + 'at: ' + datetime.now().isoformat())
+
             channel.basic_publish(exchange=EXCHANGE,
                                   routing_key=ROUTING_KEY,
                                   body=message)
             i += 1
 
         elif state == 'INIT':
+            print('Init orig service')
+
             i = 0
             set_state('RUNNING')
 
