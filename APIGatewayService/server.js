@@ -3,17 +3,31 @@ const fs = require('fs');
 
 // const LOG_FILE_PATH = '/output/logs.txt';
 const port = 8081;
+const HTTPSERV_SERVICE_URL = 'http://httpserv_service:8082';
+const STATE_SERVICE_URL = 'http://state_service:8083';
 
-
-const getMessages = (req, res) => {
-  http.get("http://httpserv_service:8082", httpservRes => {
-    httpservRes.on("data", function(httpservMessage) {
-      res.statusCode = httpservRes.statusCode;
+const forwardRequest = (req, res, url, method) => {
+  http[method](url, forwardRes => {
+    forwardRes.on("data", function(forwardMessage) {
+      res.statusCode = forwardRes.statusCode;
       res.setHeader('Content-Type', 'text/plain');
-      res.end(httpservMessage);
+      res.end(forwardMessage);
     });
   });
 }
+
+const getMessages = (req, res) => {
+  forwardRequest(req, res, HTTPSERV_SERVICE_URL, 'get');
+}
+
+const getState = (req, res) => {
+  forwardRequest(req, res, STATE_SERVICE_URL, 'get');
+}
+
+const putState = (req, res) => {
+  forwardRequest(req, res, STATE_SERVICE_URL, 'put');
+}
+
 
 const server = http.createServer((req, res) => {
   // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
@@ -29,6 +43,14 @@ const server = http.createServer((req, res) => {
   if (method === "GET" && url === "/messages") {
     return getMessages(req, res);
   };
+
+  if (method === "GET" && url === "/state") {
+    return getState(req, res);
+  }
+
+  if (method === "PUT" && url === "/state") {
+    return putState(req, res);
+  }
 
   res.statusCode = 404
   return res.end('Not found');
