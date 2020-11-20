@@ -65,7 +65,7 @@ services:
     networks:
       testing_network:
         aliases:
-          - apigateway_service
+          - state_service
 
   # test_service:
   #   build: ./tests

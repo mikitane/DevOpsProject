@@ -20,7 +20,7 @@ class APIGatewayTestCase(unittest.TestCase):
         self.assertRegex(content, expected)
 
     def test_state_running(self):
-        requests.put('http://apigateway_service:8081/state', data='RUNNING')
+        requests.put('http://apigateway_service:8081/state', 'RUNNING')
 
         messages_response1 = requests.get('http://apigateway_service:8081/messages')
         messages1_count = messages_response1.content.decode('utf-8').split('\n')
@@ -41,7 +41,7 @@ class APIGatewayTestCase(unittest.TestCase):
 
 
     def test_state_paused(self):
-        requests.put('http://apigateway_service:8081/state', data='PAUSED')
+        requests.put('http://apigateway_service:8081/state', 'PAUSED')
 
         messages_response1 = requests.get('http://apigateway_service:8081/messages')
         messages1 = messages_response1.content.decode('utf-8')
@@ -61,7 +61,7 @@ class APIGatewayTestCase(unittest.TestCase):
         self.assertEqual(messages1, messages2)
 
     def test_state_init(self):
-        requests.put('http://apigateway_service:8081/state', data='INIT')
+        requests.put('http://apigateway_service:8081/state', 'INIT')
 
         messages_response = requests.get('http://apigateway_service:8081/messages')
         messages = messages_response.content.decode('utf-8')
@@ -83,7 +83,7 @@ class APIGatewayTestCase(unittest.TestCase):
         self.assertTrue(messages2_count > 0)
 
     def test_state_shutdown(self):
-        requests.put('http://apigateway_service:8081/state', data='SHUTDOWN')
+        requests.put('http://apigateway_service:8081/state', 'SHUTDOWN')
 
         # Services should be unavailable after SHUTDOWN
         with self.assertRaises(Exception):
