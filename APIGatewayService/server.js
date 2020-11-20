@@ -2,32 +2,84 @@ const http = require('http');
 const fs = require('fs');
 
 // const LOG_FILE_PATH = '/output/logs.txt';
-const port = 8081;
-const HTTPSERV_SERVICE_URL = 'http://httpserv_service:8082';
-const STATE_SERVICE_URL = 'http://state_service:8083';
+const PORT = 8081;
 
-const forwardRequest = (req, res, url, method) => {
-  http[method](url, forwardRes => {
-    forwardRes.on("data", function(forwardMessage) {
+const HTTPSERV_SERVICE_HOSTNAME = 'httpserv_service';
+const HTTPSERV_SERVICE_PORT = 8082;
+
+const STATE_SERVICE_HOSTNAME = 'state_service';
+const STATE_SERVICE_PORT = 8083;
+
+const forwardRequest = (req, res, options, data) => {
+  const forwardRequest = http.request(options, (forwardRes) => {
+    let forwardData = '';
+
+    forwardRes.on('data', (chunk) => {
+      forwardData += chunk.toString();
+    });
+
+    forwardRes.on('end', () => {
       res.statusCode = forwardRes.statusCode;
       res.setHeader('Content-Type', 'text/plain');
-      res.end(forwardMessage);
+      res.end(forwardData);
     });
   });
-}
+
+  if (data !== undefined) {
+    forwardRequest.write(data);
+  }
+
+  forwardRequest.end();
+
+  // http[method](url, (forwardRes) => {
+  //   forwardRes.on('data', function (forwardMessage) {
+  //     res.statusCode = forwardRes.statusCode;
+  //     res.setHeader('Content-Type', 'text/plain');
+  //     res.end(forwardMessage);
+  //   });
+  // });
+};
 
 const getMessages = (req, res) => {
-  forwardRequest(req, res, HTTPSERV_SERVICE_URL, 'get');
-}
+  const options = {
+    hostname: HTTPSERV_SERVICE_HOSTNAME,
+    port: HTTPSERV_SERVICE_PORT,
+    path: '/',
+    method: 'GET',
+  };
+
+  forwardRequest(req, res, options);
+};
 
 const getState = (req, res) => {
-  forwardRequest(req, res, STATE_SERVICE_URL, 'get');
-}
+  const options = {
+    hostname: STATE_SERVICE_HOSTNAME,
+    port: STATE_SERVICE_PORT,
+    path: '/',
+    method: 'GET',
+  };
+
+  forwardRequest(req, res, options);
+};
 
 const putState = (req, res) => {
-  forwardRequest(req, res, STATE_SERVICE_URL, 'put');
-}
+  let data = '';
 
+  req.on('data', (chunk) => {
+    data += chunk.toString();
+  });
+
+  req.on('end', () => {
+    const options = {
+      hostname: STATE_SERVICE_HOSTNAME,
+      port: STATE_SERVICE_PORT,
+      path: '/',
+      method: 'PUT',
+    };
+
+    forwardRequest(req, res, options, data);
+  });
+};
 
 const server = http.createServer((req, res) => {
   // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
@@ -38,24 +90,24 @@ const server = http.createServer((req, res) => {
   // res.setHeader('Content-Type', 'text/plain');
   // res.end(content);
 
-  const { method, url, headers } = req
+  const { method, url, headers } = req;
 
-  if (method === "GET" && url === "/messages") {
+  if (method === 'GET' && url === '/messages') {
     return getMessages(req, res);
-  };
+  }
 
-  if (method === "GET" && url === "/state") {
+  if (method === 'GET' && url === '/state') {
     return getState(req, res);
   }
 
-  if (method === "PUT" && url === "/state") {
+  if (method === 'PUT' && url === '/state') {
     return putState(req, res);
   }
 
-  res.statusCode = 404
+  res.statusCode = 404;
   return res.end('Not found');
 });
 
-server.listen(port, () => {
-  console.log(`APIGateway running at port ${port}`);
+server.listen(PORT, () => {
+  console.log(`APIGateway running at port ${PORT}`);
 });
