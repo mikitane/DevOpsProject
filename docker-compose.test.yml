@@ -48,6 +48,14 @@ services:
         aliases:
           - httpserv_service
 
+  apigateway_service_test:
+    build: ./APIGatewayService
+    hostname: apigateway_service
+    networks:
+      testing_network:
+        aliases:
+          - apigateway_service
+
   test_service:
     build: ./tests
     environment:

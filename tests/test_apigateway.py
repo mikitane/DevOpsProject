@@ -2,9 +2,9 @@ import unittest
 import requests
 
 
-class HttpServTestCase(unittest.TestCase):
-    def test_output(self):
-        r = requests.get('http://httpserv_service:8082')
+class APIGatewayTestCase(unittest.TestCase):
+    def test_messages(self):
+        r = requests.get('http://apigateway_service:8081/messages')
         content = r.content.decode('utf-8')
 
         expected = (

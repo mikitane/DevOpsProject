@@ -30,6 +30,12 @@ services:
       - "8082:8082"
     networks:
       - messaging_network
+  apigateway_service:
+    build: ./APIGatewayService
+    ports:
+      - "8081:8081"
+    networks:
+      - messaging_network
 networks:
   messaging_network:
 volumes:
