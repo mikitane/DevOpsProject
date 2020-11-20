@@ -1,10 +1,12 @@
 import pika
 import time
+import requests
 from datetime import datetime
 
 BROKER_NAME = 'broker_service'
 EXCHANGE = 'topic_exchange'
 ROUTING_KEY = 'my.o'
+
 
 def establish_connection(retries=0):
     try:
@@ -16,27 +18,41 @@ def establish_connection(retries=0):
         time.sleep(2)
         return establish_connection(retries=retries + 1)
 
+
+def get_state():
+    state_response = requests.get('http://apigateway_service:8081/state')
+    return state_response.content.decode('utf-8')
+
+def set_state(state):
+    state_response = requests.put('http://apigateway_service:8081/state', state)
+    return state_response.content.decode('utf-8')
+
 def main():
     connection = establish_connection()
     channel = connection.channel()
 
     channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
 
-    # FIXME: Setup queues properly, so there is no need to sleep
-    # Sleep 3 seconds to ensure other services are ready to receive messages
-    time.sleep(3)
+    i = 0
+    while True:
+        state = get_state()
 
-    for i in range(1, 4):
-        message = 'MSG_{}'.format(i)
+        if state == 'RUNNING':
+            message = 'MSG_{}'.format(i)
 
-        channel.basic_publish(exchange=EXCHANGE,
-                            routing_key=ROUTING_KEY,
-                            body=message)
+            channel.basic_publish(exchange=EXCHANGE,
+                                  routing_key=ROUTING_KEY,
+                                  body=message)
+            i += 1
 
-        print('Message sent: ', message)
+        elif state == 'INIT':
+            i = 0
+            set_state('RUNNING')
+
         time.sleep(3)
 
     connection.close()
+
 
 # Start the service
 main()
