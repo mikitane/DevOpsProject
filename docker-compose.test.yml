@@ -2,20 +2,24 @@ version: "3.8"
 services:
   broker_service_test:
     build: ./BrokerService
+    hostname: broker_service
     networks:
       - testing_network
   orig_service_test:
     build: ./OrigService
+    hostname: orig_service
     environment:
         - PYTHONUNBUFFERED=1
     networks:
       - testing_network
   imed_service_test:
     build: ./ImedService
+    hostname: imed_service
     networks:
       - testing_network
   obse_service_test:
     build: ./ObseService
+    hostname: obse_service
     volumes:
         - "./output:/output"
     environment:
@@ -24,6 +28,7 @@ services:
       - testing_network
   httpserv_service_test:
     build: ./HttpServService
+    hostname: httpserv_service
     volumes:
       - "./output:/output"
     networks:

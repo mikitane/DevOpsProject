@@ -6,7 +6,7 @@ while True:
 	print("ASD")
 
 	try:
-		requests.get('http://httpserv_service_test:8082')
+		requests.get('http://httpserv_service:8082')
 		print('Healthcheck ok')
 		break
 	except Exception as e:
