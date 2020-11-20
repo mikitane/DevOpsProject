@@ -1,6 +1,7 @@
 import pika
 import time
 import os
+import requests
 from datetime import datetime
 
 BROKER_NAME = 'broker_service'
@@ -20,8 +21,15 @@ def establish_connection(retries=0):
         time.sleep(2)
         return establish_connection(retries=retries + 1)
 
+def get_state():
+    state_response = requests.get('http://apigateway_service:8081/state')
+    return state_response.content.decode('utf-8')
 
 def on_message(channel, method, properties, body):
+    # Save message only in RUNNING state
+    if get_state() != 'RUNNING':
+        return
+
     timestamp = datetime.utcnow().isoformat(sep='T', timespec='milliseconds') + 'Z'
     topic = method.routing_key
     message = body.decode('utf-8')
