@@ -18,5 +18,5 @@ build:
 test:
   stage: test
   script:
-    - docker run -t test_service python healthcheck.py
+    - docker run devopsproject_test_service python healthcheck.py
 
