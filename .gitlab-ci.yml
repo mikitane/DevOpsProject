@@ -18,5 +18,5 @@ build:
 test:
   stage: test
   script:
-    - docker run -it test_service python healthcheck.py
+    - docker run -t test_service python healthcheck.py
 
