@@ -6,7 +6,7 @@ def wait_for_state(wanted_state):
     for i in range(1, 20):
         state_response = requests.get('http://apigateway_service:8081/state')
         state = state_response.content.decode('utf-8')
-
+        print('------' + state + '------')
         if state == wanted_state:
             return
 
