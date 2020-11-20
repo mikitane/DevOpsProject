@@ -19,8 +19,8 @@ test:
   stage: test
   script:
     - docker run --network="testing_network" testimage:latest python healthcheck.py
-    - docker run --network="testing_network" devopsproject_test_service python test_httpserv.py
-    - docker run --network="testing_network" devopsproject_test_service python test_apigateway.py
+    - docker run --network="testing_network" testimage:latest python test_httpserv.py
+    - docker run --network="testing_network" testimage:latest python test_apigateway.py
     - docker-compose -f docker-compose.test.yml stop
 
 deploy:
