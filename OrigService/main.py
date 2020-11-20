@@ -39,15 +39,12 @@ def main():
 
         if state == 'RUNNING':
             message = 'MSG_{}'.format(i)
-            print('Sending message with ' + str(i))
             channel.basic_publish(exchange=EXCHANGE,
                                   routing_key=ROUTING_KEY,
                                   body=message)
             i += 1
 
         elif state == 'INIT':
-            print('Init orig service')
-
             i = 0
             set_state('RUNNING')
 
