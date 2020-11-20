@@ -12,11 +12,11 @@ build:
 
   stage: build
   script:
-    - docker build ./tests/Dockerfile -t testimage:latest
+    # - docker build ./tests/Dockerfile -t testimage:latest
     - docker-compose -f docker-compose.test.yml up --build -d
 
 test:
   stage: test
   script:
-    - docker run -it testimage:latest python healthcheck.py
+    - docker run -it test_service python healthcheck.py
 

@@ -28,6 +28,10 @@ services:
       - "./output:/output"
     networks:
       - testing_network
+  test_service:
+    build: ./tests
+    networks:
+      - testing_network
 networks:
   testing_network:
     external: true
