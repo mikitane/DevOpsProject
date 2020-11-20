@@ -5,7 +5,7 @@ const LOG_FILE_PATH = '/output/logs.txt';
 const port = 8082;
 
 const server = http.createServer((req, res) => {
-  if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
+  if (!fs.existsSync(LOG_FILE_PATH)) return res.end('');
 
   const content = fs.readFileSync(LOG_FILE_PATH);
 
