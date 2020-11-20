@@ -36,7 +36,15 @@ services:
       - "8081:8081"
     networks:
       - messaging_network
+  state_service:
+    build: ./StateService
+    volumes:
+      - "output_data:/output"
+      - "state_data:/state"
+    networks:
+      - messaging_network
 networks:
   messaging_network:
 volumes:
   output_data:
+  state_data:

@@ -56,6 +56,17 @@ services:
         aliases:
           - apigateway_service
 
+  state_service_test:
+    build: ./StateService
+    hostname: state_service
+    volumes:
+      - "output_data:/output"
+      - "state_data:/state"
+    networks:
+      testing_network:
+        aliases:
+          - apigateway_service
+
   # test_service:
   #   build: ./tests
   #   environment:
@@ -68,3 +79,4 @@ networks:
     name: testing_network
 volumes:
   output_data:
+  state_data:
