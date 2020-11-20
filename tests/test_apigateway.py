@@ -4,7 +4,7 @@ import requests
 
 class APIGatewayTestCase(unittest.TestCase):
     def test_messages(self):
-        r = requests.get('http://apigateway:8081')
+        r = requests.get('http://apigateway_service:8081')
         content = r.content.decode('utf-8')
 
         expected = (
