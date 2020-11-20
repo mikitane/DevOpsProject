@@ -12,19 +12,22 @@ build:
 
   stage: build
   script:
+    # Ensure that there is no container from previous test runs
+    - docker-compose -f docker-compose.test.yml down -v
     - docker build ./tests -t test_service:latest
-    - docker-compose -f docker-compose.test.yml up --build -d
+    - docker-compose -f docker-compose.test.yml up --build --force-recreate -d
 
 test:
   stage: test
   script:
     - docker run --network="testing_network" test_service:latest python healthcheck.py
-    - docker run --network="testing_network" test_service:latest python test_httpserv.py
     - docker run --network="testing_network" test_service:latest python test_apigateway.py
-    - docker-compose -f docker-compose.test.yml stop
+    # Ensure that there is no container from previous test runs
+    - docker-compose -f docker-compose.test.yml down -v
 
 deploy:
   stage: deploy
   script:
-    - docker-compose up --build -d
+    - docker-compose down -v
+    - docker-compose up --build --force-recreate -d
 

@@ -7,6 +7,8 @@ EXCHANGE = 'topic_exchange'
 CONSUME_ROUTING_KEY = 'my.o'
 PUBLISH_ROUTING_KEY = 'my.i'
 IMED_QUEUE = 'imed_queue'
+WILDCARD_ROUTING_KEY = 'my.*'
+OBSE_QUEUE = 'obse_queue'
 
 
 def establish_connection(retries=0):
@@ -36,8 +38,12 @@ def main():
     channel = connection.channel()
 
     channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
+
     channel.queue_declare(queue=IMED_QUEUE)
     channel.queue_bind(exchange=EXCHANGE, queue=IMED_QUEUE, routing_key=CONSUME_ROUTING_KEY)
+
+    channel.queue_declare(queue=OBSE_QUEUE)
+    channel.queue_bind(exchange=EXCHANGE, queue=OBSE_QUEUE, routing_key=WILDCARD_ROUTING_KEY)
 
     channel.basic_consume(queue=IMED_QUEUE,
                           auto_ack=True,

@@ -5,7 +5,10 @@ from datetime import datetime
 
 BROKER_NAME = 'broker_service'
 EXCHANGE = 'topic_exchange'
-ROUTING_KEY = 'my.o'
+MY_O_ROUTING_KEY = 'my.o'
+WILDCARD_ROUTING_KEY = 'my.*'
+OBSE_QUEUE = 'obse_queue'
+IMED_QUEUE = 'imed_queue'
 
 
 def establish_connection(retries=0):
@@ -28,10 +31,17 @@ def set_state(state):
     return state_response.content.decode('utf-8')
 
 def main():
+    print('Starting orig service')
     connection = establish_connection()
     channel = connection.channel()
 
     channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
+
+    channel.queue_declare(queue=OBSE_QUEUE)
+    channel.queue_bind(exchange=EXCHANGE, queue=OBSE_QUEUE, routing_key=WILDCARD_ROUTING_KEY)
+
+    channel.queue_declare(queue=IMED_QUEUE)
+    channel.queue_bind(exchange=EXCHANGE, queue=IMED_QUEUE, routing_key=MY_O_ROUTING_KEY)
 
     i = 0
     while True:
@@ -39,13 +49,16 @@ def main():
 
         if state == 'RUNNING':
             message = 'MSG_{}'.format(i)
+            print('Sending message with ' + str(i) + 'at: ' + datetime.now().isoformat())
 
             channel.basic_publish(exchange=EXCHANGE,
-                                  routing_key=ROUTING_KEY,
+                                  routing_key=MY_O_ROUTING_KEY,
                                   body=message)
             i += 1
 
         elif state == 'INIT':
+            print('Init orig service')
+
             i = 0
             set_state('RUNNING')
 
