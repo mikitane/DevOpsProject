@@ -4,16 +4,19 @@ services:
     build: ./BrokerService
     networks:
       - messaging_network
+
   orig_service:
     build: ./OrigService
     environment:
         - PYTHONUNBUFFERED=1
     networks:
       - messaging_network
+
   imed_service:
     build: ./ImedService
     networks:
       - messaging_network
+
   obse_service:
     build: ./ObseService
     volumes:
@@ -22,6 +25,7 @@ services:
         - PYTHONUNBUFFERED=1
     networks:
       - messaging_network
+
   httpserv_service:
     build: ./HttpServService
     volumes:
@@ -30,19 +34,26 @@ services:
       - "8082:8082"
     networks:
       - messaging_network
+
   apigateway_service:
     build: ./APIGatewayService
     ports:
       - "8081:8081"
     networks:
       - messaging_network
+
   state_service:
     build: ./StateService
+    environment:
+    - DOCKER_COMPOSE_FILE=docker-compose.yml
     volumes:
       - "output_data:/output"
       - "state_data:/state"
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './:/devopsproject'
     networks:
       - messaging_network
+
 networks:
   messaging_network:
 volumes:

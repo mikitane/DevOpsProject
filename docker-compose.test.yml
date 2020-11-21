@@ -59,20 +59,17 @@ services:
   state_service_test:
     build: ./StateService
     hostname: state_service
+    environment:
+    - DOCKER_COMPOSE_FILE=docker-compose.test.yml
     volumes:
       - "output_data_test:/output"
       - "state_data_test:/state"
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './:/devopsproject'
     networks:
       testing_network:
         aliases:
           - state_service
-
-  # test_service:
-  #   build: ./tests
-  #   environment:
-  #     - PYTHONUNBUFFERED=1
-  #   networks:
-  #     - testing_network
 
 networks:
   testing_network:
