@@ -1,7 +1,7 @@
 image: docker/compose:latest
 
-services:
-  - docker:dind
+# services:
+#   - docker:dind
 before_script:
   - ls -l
   - pwd
