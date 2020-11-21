@@ -123,11 +123,17 @@ class APIGatewayTestCase(unittest.TestCase):
             pass
 
         # Wait for containers to shut down
-        sleep(10)
+        #sleep(20)
 
-        # Services should be unavailable after SHUTDOWN
-        with self.assertRaises(Exception):
-            requests.get(APIGATEWAY_SERVICE_URL + '/state')
+        shutdown = False
+        for i in range(1, 20):
+            try:
+                requests.get(APIGATEWAY_SERVICE_URL + '/state')
+                sleep(2)
+            except:
+                shutdown = True
+
+        self.assertTrue(shutdown)
 
 if __name__ == '__main__':
     unittest.main()
