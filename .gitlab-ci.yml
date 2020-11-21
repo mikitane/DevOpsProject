@@ -13,6 +13,8 @@ before_script:
 build:
   stage: build
   script:
+    - ls -l
+    - pwd
     # Ensure that there is no container from previous test runs
     - docker-compose -f docker-compose.test.yml down -v
     - docker build ./tests -t test_service:latest
