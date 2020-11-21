@@ -30,7 +30,7 @@ services:
     build: ./ObseService
     hostname: obse_service
     volumes:
-        - "output_data:/output"
+        - "output_data_test:/output"
     environment:
         - PYTHONUNBUFFERED=1
     networks:
@@ -42,7 +42,7 @@ services:
     build: ./HttpServService
     hostname: httpserv_service
     volumes:
-      - "output_data:/output"
+      - "output_data_test:/output"
     networks:
       testing_network:
         aliases:
@@ -60,8 +60,8 @@ services:
     build: ./StateService
     hostname: state_service
     volumes:
-      - "output_data:/output"
-      - "state_data:/state"
+      - "output_data_test:/output"
+      - "state_data_test:/state"
     networks:
       testing_network:
         aliases:
@@ -78,5 +78,5 @@ networks:
   testing_network:
     name: testing_network
 volumes:
-  output_data:
-  state_data:
+  output_data_test:
+  state_data_test:
