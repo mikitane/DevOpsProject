@@ -2,9 +2,12 @@ import unittest
 import requests
 from time import sleep
 
+APIGATEWAY_SERVICE_URL = 'http://apigateway_service:8081'
+
+
 def wait_for_state(wanted_state):
     for i in range(1, 20):
-        state_response = requests.get('http://apigateway_service:8081/state')
+        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
         state = state_response.content.decode('utf-8')
         print('------' + state + '------')
         if state == wanted_state:
@@ -23,7 +26,7 @@ class APIGatewayTestCase(unittest.TestCase):
         wait_for_state('RUNNING')
         sleep(7)
 
-        response = requests.get('http://apigateway_service:8081/messages')
+        response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages = response.content.decode('utf-8').split('\n')
         messages = [m for m in messages if m]
         print(messages)
@@ -49,17 +52,17 @@ class APIGatewayTestCase(unittest.TestCase):
         # self.assertRegex(content, expected)
 
     def test_state_running(self):
-        requests.put('http://apigateway_service:8081/state', 'RUNNING')
+        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
 
-        messages_response1 = requests.get('http://apigateway_service:8081/messages')
+        messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages1_count = messages_response1.content.decode('utf-8').split('\n')
 
         sleep(5)
 
-        state_response = requests.get('http://apigateway_service:8081/state')
+        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
         state = state_response.content.decode('utf-8')
 
-        messages_response2 = requests.get('http://apigateway_service:8081/messages')
+        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages2_count = messages_response2.content.decode('utf-8').split('\n')
 
         # Ensure state stays RUNNING
@@ -70,17 +73,17 @@ class APIGatewayTestCase(unittest.TestCase):
 
 
     def test_state_paused(self):
-        requests.put('http://apigateway_service:8081/state', 'PAUSED')
+        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
 
-        messages_response1 = requests.get('http://apigateway_service:8081/messages')
+        messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages1 = messages_response1.content.decode('utf-8')
 
         sleep(5)
 
-        state_response = requests.get('http://apigateway_service:8081/state')
+        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
         state = state_response.content.decode('utf-8')
 
-        messages_response2 = requests.get('http://apigateway_service:8081/messages')
+        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages2 = messages_response2.content.decode('utf-8')
 
         # Ensure that state stays PAUSED
@@ -90,19 +93,19 @@ class APIGatewayTestCase(unittest.TestCase):
         self.assertEqual(messages1, messages2)
 
     def test_state_init(self):
-        requests.put('http://apigateway_service:8081/state', 'INIT')
+        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'INIT')
 
-        messages_response = requests.get('http://apigateway_service:8081/messages')
+        messages_response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages = messages_response.content.decode('utf-8')
 
         self.assertEqual(messages, '')
 
         sleep(5)
 
-        state_response = requests.get('http://apigateway_service:8081/state')
+        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
         state = state_response.content.decode('utf-8')
 
-        messages_response2 = requests.get('http://apigateway_service:8081/messages')
+        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages2_count = len(messages_response2.content.decode('utf-8').split('\n'))
 
         # Ensure that state is set to RUNNING automatically after INIT
@@ -112,14 +115,19 @@ class APIGatewayTestCase(unittest.TestCase):
         self.assertTrue(messages2_count > 0)
 
     def test_state_shutdown(self):
-        requests.put('http://apigateway_service:8081/state', 'SHUTDOWN')
+        # Wrap with try/except because service shutdown is started immediately.
+        # Therefore response might not be delivered.
+        try:
+            requests.put(APIGATEWAY_SERVICE_URL + '/state', 'SHUTDOWN')
+        except:
+            pass
+
+        # Wait for containers to shut down
+        sleep(10)
 
         # Services should be unavailable after SHUTDOWN
         with self.assertRaises(Exception):
-            requests.get('http://apigateway_service:8081/state')
-
-
-
+            requests.get(APIGATEWAY_SERVICE_URL + '/state')
 
 if __name__ == '__main__':
     unittest.main()
