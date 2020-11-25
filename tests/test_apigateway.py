@@ -18,6 +18,25 @@ def wait_for_state(wanted_state):
 
 
 class APIGatewayTestCase(unittest.TestCase):
+    def test_run_log(self):
+        # Ensure that system is in RUNNING state
+        wait_for_state('RUNNING')
+
+        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
+        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
+
+        response = requests.get(APIGATEWAY_SERVICE_URL + '/run-log')
+        logs = response.content.decode('utf-8')
+
+        regex = (
+            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: INIT\n'
+            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
+            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: PAUSED\n'
+            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
+        )
+
+        self.assertRegex(logs, regex)
+
     def test_messages(self):
         # Ensure that system is in RUNNING state and
         # let ORIG service send at least 2 messages.
@@ -38,17 +57,6 @@ class APIGatewayTestCase(unittest.TestCase):
             time_regex = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z '
             regex = time_regex + message_regex
             self.assertRegex(message, regex)
-
-        # expected = (
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.o: MSG_1\n'
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.i: Got MSG_1\n'
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.o: MSG_2\n'
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.i: Got MSG_2\n'
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.o: MSG_3\n'
-        #     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z Topic my\.i: Got MSG_3\n'
-        # )
-
-        # self.assertRegex(content, expected)
 
     def test_state_running(self):
         requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
@@ -121,9 +129,7 @@ class APIGatewayTestCase(unittest.TestCase):
         except:
             pass
 
-        # Wait for containers to shut down
-        #sleep(20)
-
+        # Poll API until it does not return response
         shutdown = False
         for i in range(1, 20):
             try:
