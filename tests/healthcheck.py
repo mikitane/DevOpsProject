@@ -4,12 +4,9 @@ import time
 retries = 0
 while True:
 	try:
-		requests.get('http://httpserv_service:8082')
-		print('Healthcheck ok')
+		requests.get('http://apigateway_service:8081')
 		break
 	except Exception as e:
-		print('Healthcheck failed')
-		print(e)
 		if retries > 5:
 			raise Exception('Healthcheck failed!')
 

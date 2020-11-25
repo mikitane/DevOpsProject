@@ -39,7 +39,6 @@ def on_message(channel, method, properties, body):
         topic=topic,
         message=message
     )
-    print(log_message)
 
     f = open(LOG_FILE_PATH, "a")
     f.write(log_message)

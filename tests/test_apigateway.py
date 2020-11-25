@@ -9,7 +9,6 @@ def wait_for_state(wanted_state):
     for i in range(1, 20):
         state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
         state = state_response.content.decode('utf-8')
-        print('------' + state + '------')
         if state == wanted_state:
             return
 
@@ -29,7 +28,7 @@ class APIGatewayTestCase(unittest.TestCase):
         response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
         messages = response.content.decode('utf-8').split('\n')
         messages = [m for m in messages if m]
-        print(messages)
+
         for i, message in enumerate(messages):
             message_topic = 'my.o' if i % 2 == 0 else 'my.i'
             message_type = 'MSG_' if i % 2 == 0 else 'Got MSG_'
