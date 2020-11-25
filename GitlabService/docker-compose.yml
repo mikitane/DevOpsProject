@@ -30,7 +30,7 @@ services:
     volumes:
       - './gitlab-runner1-config:/etc/gitlab-runner:Z'
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '../:/devopsproj'
+      - './:/devopsproj'
     networks:
       - gitlab-network
 
