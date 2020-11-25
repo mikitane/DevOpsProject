@@ -1,58 +1,72 @@
 version: "3.8"
 services:
-  broker_service:
+  broker_service_devops_prod:
     build: ./BrokerService
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - broker_service
 
-  orig_service:
+  orig_service_devops_prod:
     build: ./OrigService
     environment:
         - PYTHONUNBUFFERED=1
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - orig_service
 
-  imed_service:
+  imed_service_devops_prod:
     build: ./ImedService
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - imed_service
 
-  obse_service:
+  obse_service_devops_prod:
     build: ./ObseService
     volumes:
         - "output_data:/output"
     environment:
         - PYTHONUNBUFFERED=1
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - obse_service
 
-  httpserv_service:
+  httpserv_service_devops_prod:
     build: ./HttpServService
     volumes:
       - "output_data:/output"
     ports:
       - "8082:8082"
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - httpserv_service
 
-  apigateway_service:
+  apigateway_service_devops_prod:
     build: ./APIGatewayService
     ports:
       - "8081:8081"
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - apigateway_service
 
-  state_service:
+  state_service_devops_prod:
     build: ./StateService
     environment:
-    - DOCKER_COMPOSE_FILE=docker-compose.yml
+    - DEVOPS_PROJECT_ENV=prod
     volumes:
       - "output_data:/output"
       - "state_data:/state"
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '/home/miika/DevOpsProject:/devopsproject' # ${PROJECT_FILES_PATH}
+      # - '/home/miika/DevOpsProject:/devopsproject' # ${PROJECT_FILES_PATH}
     networks:
-      - messaging_network
+      messaging_network:
+        aliases:
+          - state_service
 
 networks:
   messaging_network:

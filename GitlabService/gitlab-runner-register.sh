@@ -14,5 +14,4 @@ docker exec -it gitlab-runner1 \
     --executor docker \
     --docker-image docker:stable \
     --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
-    --docker-volumes "./:/devopsproj" \
     --docker-network-mode gitlab-network

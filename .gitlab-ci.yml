@@ -6,7 +6,6 @@ before_script:
   - ls -l
   - ls -l ./
   - ls -l /
-  - ls -l /devopsproj
   - pwd
 # before_script:
 #   - curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -16,7 +15,6 @@ before_script:
 build:
   stage: build
   script:
-    - export PROJECT_FILES_PATH=$(pwd)
     - ls -l
     - pwd
     # Ensure that there is no container from previous test runs
@@ -35,7 +33,6 @@ test:
 deploy:
   stage: deploy
   script:
-    - export PROJECT_FILES_PATH=$(pwd)
     - docker-compose down -v
     - docker-compose up --build --force-recreate -d
 
