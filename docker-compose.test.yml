@@ -65,7 +65,7 @@ services:
       - "output_data_test:/output"
       - "state_data_test:/state"
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '/home/miika/DevOpsProject:/devopsproject' # ${PROJECT_FILES_PATH}
+      - '/devopsproject:/devopsproject' # ${PROJECT_FILES_PATH}
     networks:
       testing_network:
         aliases:
