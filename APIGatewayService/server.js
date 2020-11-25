@@ -55,7 +55,7 @@ const getState = (req, res) => {
   const options = {
     hostname: STATE_SERVICE_HOSTNAME,
     port: STATE_SERVICE_PORT,
-    path: '/',
+    path: '/state',
     method: 'GET',
   };
 
@@ -73,13 +73,24 @@ const putState = (req, res) => {
     const options = {
       hostname: STATE_SERVICE_HOSTNAME,
       port: STATE_SERVICE_PORT,
-      path: '/',
+      path: '/state',
       method: 'PUT',
     };
 
     forwardRequest(req, res, options, data);
   });
 };
+
+const getRunLog = (req, res) => {
+  const options = {
+    hostname: STATE_SERVICE_HOSTNAME,
+    port: STATE_SERVICE_PORT,
+    path: '/run-log',
+    method: 'GET',
+  };
+
+  forwardRequest(req, res, options);
+}
 
 const server = http.createServer((req, res) => {
   // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
@@ -102,6 +113,10 @@ const server = http.createServer((req, res) => {
 
   if (method === 'PUT' && url === '/state') {
     return putState(req, res);
+  }
+
+  if (method === 'GET' && url === '/run-log') {
+    return getRunLog(req, res);
   }
 
   res.statusCode = 404;

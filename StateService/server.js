@@ -14,7 +14,7 @@ const getState = () => {
 
 const writeLog = (newState) => {
   const timestamp = new Date().toISOString();
-  fs.writeFileSync(STATE_LOG_FILE_PATH, `${timestamp}: ${newState}`);
+  fs.appendFileSync(STATE_LOG_FILE_PATH, `${timestamp}: ${newState}\n`);
 };
 
 const initialize = () => {
@@ -30,32 +30,24 @@ const shutdown = () => {
 
   const projectEnv = process.env.DEVOPS_PROJECT_ENV;
   const nameFilters = {
-    'prod': 'devops_prod',
-    'test': 'devops_test'
-  }
+    prod: 'devops_prod',
+    test: 'devops_test',
+  };
 
   const nameFilter = nameFilters[projectEnv];
 
-
-  exec(`docker container stop $(docker container ls -q --filter name=${nameFilter})`, (error, stdout, stderr) => {
-    if (error) {
+  exec(
+    `docker container stop $(docker container ls -q --filter name=${nameFilter})`,
+    (error, stdout, stderr) => {
+      if (error) {
         console.log(`error: ${error.message}`);
-    }
-    if (stderr) {
+      }
+      if (stderr) {
         console.log(`stderr: ${stderr}`);
+      }
+      console.log(`stdout: ${stdout}`);
     }
-    console.log(`stdout: ${stdout}`);
-});
-
-//   exec(`docker-compose -f /devopsproject/${dockerComposeFile} stop`, (error, stdout, stderr) => {
-//     if (error) {
-//         console.log(`error: ${error.message}`);
-//     }
-//     if (stderr) {
-//         console.log(`stderr: ${stderr}`);
-//     }
-//     console.log(`stdout: ${stdout}`);
-// });
+  );
 };
 
 const handleGetState = (req, res) => {
@@ -107,15 +99,25 @@ const handlePutState = (req, res) => {
   });
 };
 
+const handleGetRunLog = (req, res) => {
+  const logs = fs.readFileSync(STATE_LOG_FILE_PATH);
+  res.statusCode = 200;
+  return res.end(logs);
+}
+
 const server = http.createServer((req, res) => {
   const { method, url, headers } = req;
 
-  if (method === 'GET') {
+  if (method === 'GET' && url === '/state') {
     return handleGetState(req, res);
   }
 
-  if (method === 'PUT') {
+  if (method === 'PUT' && url === '/state') {
     return handlePutState(req, res);
+  }
+
+  if (method === 'GET' && url === '/run-log') {
+    return handleGetRunLog(req, res);
   }
 });
 
