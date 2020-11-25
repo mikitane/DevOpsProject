@@ -28,9 +28,16 @@ const shutdown = () => {
   fs.writeFileSync(STATE_FILE_PATH, 'SHUTDOWN');
   writeLog('SHUTDOWN');
 
-  const dockerComposeFile = process.env.DOCKER_COMPOSE_FILE;
+  const projectEnv = process.env.DEVOPS_PROJECT_ENV;
+  const nameFilters = {
+    'prod': 'devops_prod',
+    'test': 'devops_test'
+  }
 
-  exec(`docker-compose -f /devopsproject/${dockerComposeFile} stop`, (error, stdout, stderr) => {
+  const nameFilter = nameFilters[projectEnv];
+
+
+  exec(`docker container stop $(docker container ls -q --filter name=${nameFilter})`, (error, stdout, stderr) => {
     if (error) {
         console.log(`error: ${error.message}`);
     }
@@ -39,6 +46,16 @@ const shutdown = () => {
     }
     console.log(`stdout: ${stdout}`);
 });
+
+//   exec(`docker-compose -f /devopsproject/${dockerComposeFile} stop`, (error, stdout, stderr) => {
+//     if (error) {
+//         console.log(`error: ${error.message}`);
+//     }
+//     if (stderr) {
+//         console.log(`stderr: ${stderr}`);
+//     }
+//     console.log(`stdout: ${stdout}`);
+// });
 };
 
 const handleGetState = (req, res) => {

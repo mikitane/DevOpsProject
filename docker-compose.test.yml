@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  broker_service_test:
+  broker_service_devops_test:
     build: ./BrokerService
     hostname: broker_service
     networks:
@@ -8,7 +8,7 @@ services:
         aliases:
           - broker_service
 
-  orig_service_test:
+  orig_service_devops_test:
     build: ./OrigService
     hostname: orig_service
     environment:
@@ -18,7 +18,7 @@ services:
         aliases:
           - orig_service
 
-  imed_service_test:
+  imed_service_devops_test:
     build: ./ImedService
     hostname: imed_service
     networks:
@@ -26,7 +26,7 @@ services:
         aliases:
           - imed_service
 
-  obse_service_test:
+  obse_service_devops_test:
     build: ./ObseService
     hostname: obse_service
     volumes:
@@ -38,7 +38,7 @@ services:
         aliases:
           - obse_service
 
-  httpserv_service_test:
+  httpserv_service_devops_test:
     build: ./HttpServService
     hostname: httpserv_service
     volumes:
@@ -48,7 +48,7 @@ services:
         aliases:
           - httpserv_service
 
-  apigateway_service_test:
+  apigateway_service_devops_test:
     build: ./APIGatewayService
     hostname: apigateway_service
     networks:
@@ -56,16 +56,16 @@ services:
         aliases:
           - apigateway_service
 
-  state_service_test:
+  state_service_devops_test:
     build: ./StateService
     hostname: state_service
     environment:
-    - DOCKER_COMPOSE_FILE=docker-compose.test.yml
+    - DEVOPS_PROJECT_ENV=test
     volumes:
       - "output_data_test:/output"
       - "state_data_test:/state"
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '/home/miika/DevOpsProject:/devopsproject' # ${PROJECT_FILES_PATH}
+      # - '/home/miika/DevOpsProject:/devopsproject' # ${PROJECT_FILES_PATH}
     networks:
       testing_network:
         aliases:
