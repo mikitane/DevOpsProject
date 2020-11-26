@@ -11,6 +11,8 @@ SSH_COMMAND="ssh -o \"StrictHostKeyChecking no\" -i $PRODUCTION_SSH_PRIVATE_KEY_
 
 if [ "$DEPLOY_ENV" = "prod" ]
 then
+  ls -l
+  pwd
   echo "Production deployment"
   eval $SSH_COMMAND "\"cd $PRODCUTION_PROJECT_PATH; docker-compose down -v\""
   eval $SSH_COMMAND "\"cd $PRODCUTION_PROJECT_PATH; docker-compose up --build --force-recreate -d\""
