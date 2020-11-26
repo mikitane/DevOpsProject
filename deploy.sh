@@ -14,6 +14,7 @@ then
   ls -l
   pwd
   echo "Production deployment"
+  chmod 600 $PRODUCTION_SSH_PRIVATE_KEY_FILE
   eval $SSH_COMMAND "\"cd $PRODCUTION_PROJECT_PATH; docker-compose down -v\""
   eval $SSH_COMMAND "\"cd $PRODCUTION_PROJECT_PATH; docker-compose up --build --force-recreate -d\""
 else
