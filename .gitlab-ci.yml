@@ -33,6 +33,6 @@ test:
 deploy:
   stage: deploy
   script:
-    - docker-compose down -v
-    - docker-compose up --build --force-recreate -d
+    - export DEPLOY_ENV=prod
+    - sh deploy.sh
 
