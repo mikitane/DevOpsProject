@@ -3,7 +3,7 @@
 
 PRODUCTION_USER="devops_deploy"
 PRODUCTION_HOST="34.74.12.236"
-PRODUCTION_SSH_PRIVATE_KEY_FILE="/etc/ssh/devops_deploy_key"
+PRODUCTION_SSH_PRIVATE_KEY_FILE="/etc/ssh/devops_deploy_key.txt"
 PRODCUTION_PROJECT_PATH="/home/devops_deploy/DevOpsProject"
 
 SSH_COMMAND="ssh -o \"StrictHostKeyChecking no\" -i $PRODUCTION_SSH_PRIVATE_KEY_FILE ${PRODUCTION_USER}@${PRODUCTION_HOST}"

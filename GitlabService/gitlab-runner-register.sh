@@ -14,5 +14,5 @@ docker exec -it gitlab-runner1 \
     --executor docker \
     --docker-image docker:stable \
     --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
-    --docker-volumes "/etc/ssh/devops_deploy_key:/etc/ssh/devops_deploy_key" \
+    --docker-volumes "/etc/ssh/devops_deploy_key.txt:/etc/ssh/devops_deploy_key.txt" \
     --docker-network-mode gitlab-network
