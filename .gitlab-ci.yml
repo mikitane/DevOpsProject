@@ -24,6 +24,7 @@ test:
 deploy:
   stage: deploy
   script:
+    - ls -l /etc/ssh
     - export DEPLOY_ENV=prod
     - sh deploy.sh
 
