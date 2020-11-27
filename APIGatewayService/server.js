@@ -30,14 +30,6 @@ const forwardRequest = (req, res, options, data) => {
   }
 
   forwardRequest.end();
-
-  // http[method](url, (forwardRes) => {
-  //   forwardRes.on('data', function (forwardMessage) {
-  //     res.statusCode = forwardRes.statusCode;
-  //     res.setHeader('Content-Type', 'text/plain');
-  //     res.end(forwardMessage);
-  //   });
-  // });
 };
 
 const getMessages = (req, res) => {
@@ -92,6 +84,20 @@ const getRunLog = (req, res) => {
   forwardRequest(req, res, options);
 }
 
+const getNodeStatistics = (req, res) => {
+  const options = {
+    hostname: STATE_SERVICE_HOSTNAME,
+    port: STATE_SERVICE_PORT,
+    path: '/node-statistic',
+    method: 'GET',
+  };
+
+  forwardRequest(req, res, options);
+}
+
+
+
+
 const server = http.createServer((req, res) => {
   // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
 
@@ -117,6 +123,10 @@ const server = http.createServer((req, res) => {
 
   if (method === 'GET' && url === '/run-log') {
     return getRunLog(req, res);
+  }
+
+  if (method === 'GET' && url === '/node-statistic') {
+    return getNodeStatistics(req, res);
   }
 
   res.statusCode = 404;
