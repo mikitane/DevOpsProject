@@ -1,5 +1,6 @@
 import unittest
 import requests
+import json
 from time import sleep
 
 APIGATEWAY_SERVICE_URL = 'http://apigateway_service:8081'
@@ -18,6 +19,23 @@ def wait_for_state(wanted_state):
 
 
 class APIGatewayTestCase(unittest.TestCase):
+    def test_node_statistic(self):
+        # Ensure that system is in RUNNING state
+        wait_for_state('RUNNING')
+
+        response = requests.get(APIGATEWAY_SERVICE_URL + '/node-statistic')
+        statistics2 = json.loads(response.content)
+
+        expected_keys = [
+          'fd_used',
+          'disk_free',
+          'mem_used',
+          'processors',
+          'io_read_avg_time',
+        ]
+
+        self.assertEqual(expected_keys, list(statistics2.keys()))
+
     def test_run_log(self):
         # Ensure that system is in RUNNING state
         wait_for_state('RUNNING')
