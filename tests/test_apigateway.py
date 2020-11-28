@@ -19,145 +19,181 @@ def wait_for_state(wanted_state):
 
 
 class APIGatewayTestCase(unittest.TestCase):
-    def test_node_statistic(self):
+    def test_queue_statistic(self):
         # Ensure that system is in RUNNING state
         wait_for_state('RUNNING')
 
-        response = requests.get(APIGATEWAY_SERVICE_URL + '/node-statistic')
-        statistics2 = json.loads(response.content)
+        response = requests.get(APIGATEWAY_SERVICE_URL + '/queue-statistic')
+        statistics = json.loads(response.content)
 
         expected_keys = [
-          'fd_used',
-          'disk_free',
-          'mem_used',
-          'processors',
-          'io_read_avg_time',
+            'queue',
+            'message_delivery_rate',
+            'messages_publishing_rate',
+            'messages_delivered_recently',
+            'message_published_lately'
         ]
 
-        self.assertEqual(expected_keys, list(statistics2.keys()))
-
-    def test_run_log(self):
-        # Ensure that system is in RUNNING state
-        wait_for_state('RUNNING')
-
-        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
-        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
-
-        response = requests.get(APIGATEWAY_SERVICE_URL + '/run-log')
-        logs = response.content.decode('utf-8')
-
-        regex = (
-            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: INIT\n'
-            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
-            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: PAUSED\n'
-            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
-        )
-
-        self.assertRegex(logs, regex)
-
-    def test_messages(self):
-        # Ensure that system is in RUNNING state and
-        # let ORIG service send at least 2 messages.
-        # (ORIG has 3 seconds sleep between messages)
-        wait_for_state('RUNNING')
-        sleep(7)
-
-        response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages = response.content.decode('utf-8').split('\n')
-        messages = [m for m in messages if m]
-
-        for i, message in enumerate(messages):
-            message_topic = 'my.o' if i % 2 == 0 else 'my.i'
-            message_type = 'MSG_' if i % 2 == 0 else 'Got MSG_'
-            message_num = i // 2
-
-            message_regex = 'Topic {}: {}{}'.format(message_topic, message_type, message_num)
-            time_regex = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z '
-            regex = time_regex + message_regex
-            self.assertRegex(message, regex)
-
-    def test_state_running(self):
-        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
-
-        messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages1_count = messages_response1.content.decode('utf-8').split('\n')
-
-        sleep(5)
-
-        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
-        state = state_response.content.decode('utf-8')
-
-        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages2_count = messages_response2.content.decode('utf-8').split('\n')
-
-        # Ensure state stays RUNNING
-        self.assertEqual(state, 'RUNNING')
-
-        # Ensure new messages are sent
-        self.assertTrue(messages1_count < messages2_count)
+        self.assertEqual(expected_keys, list(statistics[0].keys()))
+        self.assertEqual(expected_keys, list(statistics[1].keys()))
+        self.assertEqual(2, len(statistics))
 
 
-    def test_state_paused(self):
-        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
+    # def test_node_statistic(self):
+    #     # Ensure that system is in RUNNING state
+    #     wait_for_state('RUNNING')
 
-        messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages1 = messages_response1.content.decode('utf-8')
+    #     response = requests.get(APIGATEWAY_SERVICE_URL + '/node-statistic')
+    #     statistics = json.loads(response.content)
 
-        sleep(5)
+    #     expected_keys = [
+    #         'fd_used',
+    #         'disk_free',
+    #         'mem_used',
+    #         'processors',
+    #         'io_read_avg_time',
+    #     ]
 
-        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
-        state = state_response.content.decode('utf-8')
+    #     self.assertEqual(expected_keys, list(statistics.keys()))
 
-        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages2 = messages_response2.content.decode('utf-8')
+    # def test_queue_statistic(self):
+    #     # Ensure that system is in RUNNING state
+    #     wait_for_state('RUNNING')
 
-        # Ensure that state stays PAUSED
-        self.assertEqual(state, 'PAUSED')
+    #     response = requests.get(APIGATEWAY_SERVICE_URL + '/queue-statistic')
+    #     statistics = json.loads(response.content)
 
-        # Ensure that no new message are sent in paused state
-        self.assertEqual(messages1, messages2)
+    #     expected_keys = [
+    #         'fd_used',
+    #         'disk_free',
+    #         'mem_used',
+    #         'processors',
+    #         'io_read_avg_time',
+    #     ]
 
-    def test_state_init(self):
-        requests.put(APIGATEWAY_SERVICE_URL + '/state', 'INIT')
+    #     self.assertEqual(expected_keys, list(statistics.keys()))
 
-        messages_response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages = messages_response.content.decode('utf-8')
+    # def test_run_log(self):
+    #     # Ensure that system is in RUNNING state
+    #     wait_for_state('RUNNING')
 
-        self.assertEqual(messages, '')
+    #     requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
+    #     requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
 
-        sleep(5)
+    #     response = requests.get(APIGATEWAY_SERVICE_URL + '/run-log')
+    #     logs = response.content.decode('utf-8')
 
-        state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
-        state = state_response.content.decode('utf-8')
+    #     regex = (
+    #         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: INIT\n'
+    #         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
+    #         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: PAUSED\n'
+    #         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z: RUNNING\n'
+    #     )
 
-        messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
-        messages2_count = len(messages_response2.content.decode('utf-8').split('\n'))
+    #     self.assertRegex(logs, regex)
 
-        # Ensure that state is set to RUNNING automatically after INIT
-        self.assertEqual(state, 'RUNNING')
+    # def test_messages(self):
+    #     # Ensure that system is in RUNNING state and
+    #     # let ORIG service send at least 2 messages.
+    #     # (ORIG has 3 seconds sleep between messages)
+    #     wait_for_state('RUNNING')
+    #     sleep(7)
 
-        # Ensure that new messages are sent after init
-        self.assertTrue(messages2_count > 0)
+    #     response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages = response.content.decode('utf-8').split('\n')
+    #     messages = [m for m in messages if m]
 
-    def test_state_shutdown(self):
-        # Wrap with try/except because service shutdown is started immediately.
-        # Therefore response might not be delivered.
-        try:
-            requests.put(APIGATEWAY_SERVICE_URL + '/state', 'SHUTDOWN')
-        except:
-            pass
+    #     for i, message in enumerate(messages):
+    #         message_topic = 'my.o' if i % 2 == 0 else 'my.i'
+    #         message_type = 'MSG_' if i % 2 == 0 else 'Got MSG_'
+    #         message_num = i // 2
 
-        # Poll API until it does not return response
-        shutdown = False
-        for i in range(1, 20):
-            try:
-                requests.get(APIGATEWAY_SERVICE_URL + '/state')
-                sleep(2)
-            except:
-                shutdown = True
+    #         message_regex = 'Topic {}: {}{}'.format(message_topic, message_type, message_num)
+    #         time_regex = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z '
+    #         regex = time_regex + message_regex
+    #         self.assertRegex(message, regex)
 
-        self.assertTrue(shutdown)
+    # def test_state_running(self):
+    #     requests.put(APIGATEWAY_SERVICE_URL + '/state', 'RUNNING')
+
+    #     messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages1_count = messages_response1.content.decode('utf-8').split('\n')
+
+    #     sleep(5)
+
+    #     state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
+    #     state = state_response.content.decode('utf-8')
+
+    #     messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages2_count = messages_response2.content.decode('utf-8').split('\n')
+
+    #     # Ensure state stays RUNNING
+    #     self.assertEqual(state, 'RUNNING')
+
+    #     # Ensure new messages are sent
+    #     self.assertTrue(messages1_count < messages2_count)
+
+    # def test_state_paused(self):
+    #     requests.put(APIGATEWAY_SERVICE_URL + '/state', 'PAUSED')
+
+    #     messages_response1 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages1 = messages_response1.content.decode('utf-8')
+
+    #     sleep(5)
+
+    #     state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
+    #     state = state_response.content.decode('utf-8')
+
+    #     messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages2 = messages_response2.content.decode('utf-8')
+
+    #     # Ensure that state stays PAUSED
+    #     self.assertEqual(state, 'PAUSED')
+
+    #     # Ensure that no new message are sent in paused state
+    #     self.assertEqual(messages1, messages2)
+
+    # def test_state_init(self):
+    #     requests.put(APIGATEWAY_SERVICE_URL + '/state', 'INIT')
+
+    #     messages_response = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages = messages_response.content.decode('utf-8')
+
+    #     self.assertEqual(messages, '')
+
+    #     sleep(5)
+
+    #     state_response = requests.get(APIGATEWAY_SERVICE_URL + '/state')
+    #     state = state_response.content.decode('utf-8')
+
+    #     messages_response2 = requests.get(APIGATEWAY_SERVICE_URL + '/messages')
+    #     messages2_count = len(messages_response2.content.decode('utf-8').split('\n'))
+
+    #     # Ensure that state is set to RUNNING automatically after INIT
+    #     self.assertEqual(state, 'RUNNING')
+
+    #     # Ensure that new messages are sent after init
+    #     self.assertTrue(messages2_count > 0)
+
+    # def test_state_shutdown(self):
+    #     # Wrap with try/except because service shutdown is started immediately.
+    #     # Therefore response might not be delivered.
+    #     try:
+    #         requests.put(APIGATEWAY_SERVICE_URL + '/state', 'SHUTDOWN')
+    #     except:
+    #         pass
+
+    #     # Poll API until it does not return response
+    #     shutdown = False
+    #     for i in range(1, 20):
+    #         try:
+    #             requests.get(APIGATEWAY_SERVICE_URL + '/state')
+    #             sleep(2)
+    #         except:
+    #             shutdown = True
+
+    #     self.assertTrue(shutdown)
+
 
 if __name__ == '__main__':
     unittest.main()
-
