@@ -8,10 +8,9 @@ RUN curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-c
 RUN chmod +x /usr/local/bin/docker-compose
 RUN ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
-# Add Docker Compose files to enable shutdown of services
-# ADD ../docker-compose.yml /
-# ADD ../docker-compose.test.yml /
+# Add application code
+ADD rabbitmq-stats.js /
+ADD server.js /
 
 # Start server
-ADD server.js /
 CMD ["node", "server.js"]

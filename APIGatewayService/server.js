@@ -95,8 +95,16 @@ const getNodeStatistics = (req, res) => {
   forwardRequest(req, res, options);
 }
 
+const getQueueStatistics = (req, res) => {
+  const options = {
+    hostname: STATE_SERVICE_HOSTNAME,
+    port: STATE_SERVICE_PORT,
+    path: '/queue-statistic',
+    method: 'GET',
+  };
 
-
+  forwardRequest(req, res, options);
+}
 
 const server = http.createServer((req, res) => {
   // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
@@ -127,6 +135,10 @@ const server = http.createServer((req, res) => {
 
   if (method === 'GET' && url === '/node-statistic') {
     return getNodeStatistics(req, res);
+  }
+
+  if (method === 'GET' && url === '/queue-statistic') {
+    return getQueueStatistics(req, res);
   }
 
   res.statusCode = 404;
