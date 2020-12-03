@@ -1,3 +1,5 @@
+# Configuration for Gitlab Web and Gitlab Runner containers
+
 version: '3.8'
 
 services:
@@ -30,6 +32,8 @@ services:
     volumes:
       - './gitlab-runner1-config:/etc/gitlab-runner:Z'
       - '/var/run/docker.sock:/var/run/docker.sock'
+      # Store your private SSH key in this location
+      # if you want to deploy the application to a remote server
       - '/etc/ssh/devops_deploy_key.txt:/etc/ssh/devops_deploy_key.txt'
     networks:
       - gitlab-network
