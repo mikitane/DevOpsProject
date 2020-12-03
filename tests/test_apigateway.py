@@ -38,7 +38,7 @@ class APIGatewayTestCase(unittest.TestCase):
             'message_delivery_rate',
             'messages_publishing_rate',
             'messages_delivered_recently',
-            'message_published_lately'
+            'message_published_lately_broken'
         }
 
         # Retry request a few times if not valid.
