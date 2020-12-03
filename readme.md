@@ -98,33 +98,33 @@ The application exposes the port 8081 to host machine. This port is used to make
 
 All compulsory features are served from these endpoints: \
 /messages GET \
-Returns the messages registered by ObseService. \
+Returns the messages registered by ObseService.
 
 /state GET \
-Returns the state of the application \
+Returns the state of the application
 
 /state PUT \
-Takes a new state as a payload and sets application to that state. Possible values are PAUSED, RUNNING, INIT, SHUTDOWN. \
+Takes a new state as a payload and sets application to that state. Possible values are PAUSED, RUNNING, INIT, SHUTDOWN.
 
 RUNNING = OrigService sends new messages every 3 seconds \
 PAUSED = No new messages are sent \
 INIT = Initializes the application, all previous data is cleared. Application changes automatically to RUNNING state after a while. \
-SHUTDOWN = Stops all the containers that the application uses. \
+SHUTDOWN = Stops all the containers that the application uses.
 
 /run-log GET \
 Returns logs of state changes. \
 Example log: \
 2020-12-03T17:35:43.382Z: INIT \
-2020-12-03T17:36:01.260Z: RUNNING \
+2020-12-03T17:36:01.260Z: RUNNING
 
 /node-statistic GET \
-Returns statistics of RabbitMQ nodes in JSON format. Response includes following data: \
+Returns statistics of RabbitMQ nodes in JSON format. Response includes following data:
 
 fd_used = Used file descriptors. \
 disk_free = Disk free space in bytes. \
 mem_used = Memory used in bytes. \
 processors =  Number of cores detected and usable by Erlang. \
-io_read_avg_time = Average wall time (milliseconds) for each disk read operation in the last statistics interval. \
+io_read_avg_time = Average wall time (milliseconds) for each disk read operation in the last statistics interval.
 
 /queue-statistic GET \
 
@@ -134,7 +134,7 @@ queue = Name of the queue \
 message_delivery_rate = How much the count of messages delivered has changed per second in the most recent sampling interval. \
 messages_publishing_rate = How much the count of messages published has changed per second in the most recent sampling interval. \
 messages_delivered_recently = Count of messages delivered \
-message_published_lately  = Count of messages published lately \
+message_published_lately  = Count of messages published lately
 
 ## Explanation of the main files and directories in the codebase
 ##### docker-compose.yml and docker-compose.test.yml
