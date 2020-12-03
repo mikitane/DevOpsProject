@@ -19,9 +19,6 @@ if [ "$DEPLOY_ENV" = "remote" ]
 then
   echo "Production deployment"
   chmod 600 $REMOTE_SSH_PRIVATE_KEY_FILE
-
-
-
   eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin\""
   eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git checkout $CI_COMMIT_BRANCH\""
   eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin $CI_COMMIT_BRANCH\""
