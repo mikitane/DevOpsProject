@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# Register the Gitlab Runner with Gitlab Web
+# by executing this script. Remember to get the
+# right registration_token from Gitlab Web first.
+
 # Get the registration token from:
 # http://localhost:8080/root/${project}/settings/ci_cd
 

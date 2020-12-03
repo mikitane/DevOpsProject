@@ -4,6 +4,6 @@ FROM python:3.9
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Start service
+# Add application code
 COPY healthcheck.py .
 COPY test_apigateway.py .

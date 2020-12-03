@@ -1,3 +1,6 @@
+# Helper script to ensure that APIGatewayService
+# is running and ready to receive HTTP requests.
+
 import requests
 import time
 
