@@ -1,9 +1,11 @@
+# Used to setup the containers for the production environment.
+# Network aliases are used to match the names with the
+# test environment.
+
 version: "3.8"
 services:
   broker_service_devops_prod:
     build: ./BrokerService
-    ports:
-      - "15672:15672"
     networks:
       messaging_network:
         aliases:
@@ -12,6 +14,8 @@ services:
   orig_service_devops_prod:
     build: ./OrigService
     environment:
+        # Enables python to print to console immediately,
+        # not after container shutdown
         - PYTHONUNBUFFERED=1
     networks:
       messaging_network:
@@ -28,8 +32,11 @@ services:
   obse_service_devops_prod:
     build: ./ObseService
     volumes:
+        # Used to share the message log file with other services
         - "output_data:/output"
     environment:
+        # Enables python to print to console immediately,
+        # not after container shutdown
         - PYTHONUNBUFFERED=1
     networks:
       messaging_network:
@@ -39,6 +46,7 @@ services:
   httpserv_service_devops_prod:
     build: ./HttpServService
     volumes:
+      # Used to share the message log file with other services
       - "output_data:/output"
     ports:
       - "8082:8082"
@@ -59,10 +67,14 @@ services:
   state_service_devops_prod:
     build: ./StateService
     environment:
+      # The command to shutdown the containers used in this service
+      # varies based on this environment variable
     - DEVOPS_PROJECT_ENV=prod
     volumes:
+      # Used to share the message log file with other services
       - "output_data:/output"
       - "state_data:/state"
+      # Shares the Docker socket of the host machine
       - '/var/run/docker.sock:/var/run/docker.sock'
     networks:
       messaging_network:

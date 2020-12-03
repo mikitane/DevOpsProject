@@ -1,15 +1,26 @@
+/*
+APIGatewayService is the only service that is exposed
+to outside networks. This service is responsible for
+forwarding the requests from the user to the correct
+service.
+*/
+
 const http = require('http');
 const fs = require('fs');
 
-// const LOG_FILE_PATH = '/output/logs.txt';
+// Serve requests from this port. This port is
+// also accessible from outside networks.
 const PORT = 8081;
 
+// HttpServService config
 const HTTPSERV_SERVICE_HOSTNAME = 'httpserv_service';
 const HTTPSERV_SERVICE_PORT = 8082;
 
+// StateService config
 const STATE_SERVICE_HOSTNAME = 'state_service';
 const STATE_SERVICE_PORT = 8083;
 
+// Helper function to forward requests to different services
 const forwardRequest = (req, res, options, data) => {
   const forwardRequest = http.request(options, (forwardRes) => {
     let forwardData = '';
@@ -32,6 +43,8 @@ const forwardRequest = (req, res, options, data) => {
   forwardRequest.end();
 };
 
+// Handler function for /messages GET
+// Forwards request to HttpServService
 const getMessages = (req, res) => {
   const options = {
     hostname: HTTPSERV_SERVICE_HOSTNAME,
@@ -43,6 +56,8 @@ const getMessages = (req, res) => {
   forwardRequest(req, res, options);
 };
 
+// Handler function for /state GET
+// Forwards request to StateService
 const getState = (req, res) => {
   const options = {
     hostname: STATE_SERVICE_HOSTNAME,
@@ -54,6 +69,8 @@ const getState = (req, res) => {
   forwardRequest(req, res, options);
 };
 
+// Handler function for /state PUT
+// Forwards request to StateService
 const putState = (req, res) => {
   let data = '';
 
@@ -73,6 +90,8 @@ const putState = (req, res) => {
   });
 };
 
+// Handler function for /run-log GET
+// Forwards request to StateService
 const getRunLog = (req, res) => {
   const options = {
     hostname: STATE_SERVICE_HOSTNAME,
@@ -82,8 +101,10 @@ const getRunLog = (req, res) => {
   };
 
   forwardRequest(req, res, options);
-}
+};
 
+// Handler function for /node-statistic GET
+// Forwards request to StateService
 const getNodeStatistics = (req, res) => {
   const options = {
     hostname: STATE_SERVICE_HOSTNAME,
@@ -93,8 +114,10 @@ const getNodeStatistics = (req, res) => {
   };
 
   forwardRequest(req, res, options);
-}
+};
 
+// Handler function for /queue-statistic GET
+// Forwards request to StateService
 const getQueueStatistics = (req, res) => {
   const options = {
     hostname: STATE_SERVICE_HOSTNAME,
@@ -104,18 +127,11 @@ const getQueueStatistics = (req, res) => {
   };
 
   forwardRequest(req, res, options);
-}
+};
 
+// Create the server and link urls to correct handlers
 const server = http.createServer((req, res) => {
-  // if (!fs.existsSync(LOG_FILE_PATH)) return res.end('No content');
-
-  // const content = fs.readFileSync(LOG_FILE_PATH);
-
-  // res.statusCode = 200;
-  // res.setHeader('Content-Type', 'text/plain');
-  // res.end(content);
-
-  const { method, url, headers } = req;
+  const { method, url } = req;
 
   if (method === 'GET' && url === '/messages') {
     return getMessages(req, res);
@@ -145,6 +161,7 @@ const server = http.createServer((req, res) => {
   return res.end('Not found');
 });
 
+// Start the server
 server.listen(PORT, () => {
   console.log(`APIGateway running at port ${PORT}`);
 });
