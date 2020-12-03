@@ -77,7 +77,7 @@ def main():
 
         # Publish a new message with my.o routing key
         if state == 'RUNNING':
-            message = 'ASDMSG_{}'.format(i)
+            message = 'MSG_{}'.format(i)
 
             channel.basic_publish(exchange=EXCHANGE,
                                   routing_key=MY_O_ROUTING_KEY,
