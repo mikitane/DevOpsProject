@@ -1,4 +1,4 @@
-# ImedService is responsible for listening
+# ObseService is responsible for listening
 # for messages published with routing key
 # that matches my.* wild card key.
 # When message is received it is stored to

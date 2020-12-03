@@ -1,9 +1,15 @@
 const http = require('http');
 
+// Internal domain name of the RabbitMQ service
 const BROKER_SERVICE_HOSTNAME = 'broker_service';
+
+// Credentials to use when making calls to RabbitMQ server
 const BROKER_SERVICE_AUTH = 'guest:guest';
+
+// Port in which RabbitMQ HTTP server is running
 const BROKER_SERVICE_PORT = 15672;
 
+// Helper function for making requests to RabbitMQ server
 const makeRequest = (customOptions, callback) => {
   const options = {
     hostname: BROKER_SERVICE_HOSTNAME,
@@ -32,6 +38,7 @@ const makeRequest = (customOptions, callback) => {
   rabbitMqReq.end();
 }
 
+// Returns statistics of RabbitMQ nodes
 const handleGetNodeStatistics = (req, res) => {
   makeRequest({ path: '/api/nodes' }, (data) =>  {
     if (!data) return res.end('{}');
@@ -60,6 +67,7 @@ const handleGetNodeStatistics = (req, res) => {
   })
 };
 
+// Returns statistics of RabbitMQ queues
 const handleGetQueueStatistics = (req, res) => {
   console.log('handleGetQueueStatistics 1')
   makeRequest({ path: '/api/queues' }, (data) =>  {

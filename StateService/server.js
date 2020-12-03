@@ -1,4 +1,4 @@
-// OrigService is responsible for managing the state of
+// StateService is responsible for managing the state of
 // the application and statistics from RabbitMQ.
 // The service serves this data to clients
 // from HTTP server.

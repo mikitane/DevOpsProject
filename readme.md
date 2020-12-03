@@ -135,3 +135,55 @@ message_delivery_rate = How much the count of messages delivered has changed per
 messages_publishing_rate = How much the count of messages published has changed per second in the most recent sampling interval. \
 messages_delivered_recently = Count of messages delivered \
 message_published_lately  = Count of messages published lately \
+
+## Explanation of the main files and directories in the codebase
+##### docker-compose.yml and docker-compose.test.yml
+There are different docker-compose -files for managing the application in production and testing environment. Separate files were necessary because the test and production containers are executed in the same host machine in the local deployment mode. If these containers would be executed in different machines, only a single file would be needed.
+
+##### .gitlab-ci.yml
+This file is used to instruct Gitlab on how to build, test and deploy the application from the CI/CD pipeline.
+
+##### deploy.sh
+Helper script for deploying the application to local and remote environments
+
+##### APIGatewayService
+This service is the only service that is exposed
+to outside networks. This service is responsible for
+forwarding the requests from the user to the correct
+service.
+
+##### BrokerService
+This service is responsible for setting up the RabbitMQ server
+
+##### GitlabService
+This service is responsible for setting up the Gitlab Web and Gitlab Runner containers. These containers are managed with separate docker-compose.yml which is located in service’s directory.
+
+##### HttpServService
+This service has currently only one responsibility:
+reading the message logs produced by ObseService and
+sending those back to the client.
+
+##### ImedService
+This service is responsible for handling two
+different tasks: listening for messages with
+my.o routing key and publishing a modified
+message with my.i routing key.
+
+##### ObseService
+This service is responsible for listening
+for messages published with routing key
+that matches my.* wild card key.
+When message is received it is stored to
+the log file
+
+##### OrigService
+OrigService is responsible for publishing
+new messages every 3 seconds with my.o routing key
+The service publishes new messages only when the
+application is in RUNNING state
+
+##### StateService
+StateService is responsible for managing the state of
+the application and statistics from RabbitMQ.
+The service serves this data to clients
+from HTTP server.
