@@ -22,9 +22,9 @@ then
 
 
 
-  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin"
-  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git checkout $CI_COMMIT_BRANCH"
-  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin $CI_COMMIT_BRANCH"
+  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin\""
+  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git checkout $CI_COMMIT_BRANCH\""
+  eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; git pull origin $CI_COMMIT_BRANCH\""
   eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; docker-compose down -v\""
   eval $SSH_COMMAND "\"cd $REMOTE_PROJECT_PATH; docker-compose up --build --force-recreate -d\""
 else
