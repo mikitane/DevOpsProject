@@ -43,7 +43,7 @@ class APIGatewayTestCase(unittest.TestCase):
 
         # Retry request a few times if not valid.
         # RabbitMQ takes a while before generating first statistics.
-        for i in range(1, 5):
+        for i in range(1, 10):
             response = requests.get(APIGATEWAY_SERVICE_URL + '/queue-statistic')
             statistics = json.loads(response.content)
 
@@ -72,7 +72,7 @@ class APIGatewayTestCase(unittest.TestCase):
 
     #     # Retry request a few times if not valid.
     #     # RabbitMQ takes a while before generating first statistics.
-    #     for i in range(1, 5):
+    #     for i in range(1, 10):
     #         response = requests.get(APIGATEWAY_SERVICE_URL + '/node-statistic')
     #         statistics = json.loads(response.content)
 
