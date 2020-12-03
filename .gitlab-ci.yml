@@ -25,6 +25,6 @@ deploy:
   stage: deploy
   script:
     - ls -l /etc/ssh
-    - export DEPLOY_ENV=remote
+    - export DEPLOY_ENV=local
     - sh deploy.sh
 
